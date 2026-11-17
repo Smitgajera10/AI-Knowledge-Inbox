@@ -4,8 +4,17 @@ import helmet from "helmet";
 import { pinoHttp } from "pino-http";
 import { errorHandler, notFoundHandler } from "./middleware/error-handler.js";
 import { logger } from "./utils/logger.js";
+import type { ItemRepository } from "./database/repositories/item-repository.js";
+import type { IngestionQueue } from "./workers/ingestion-queue.js";
+import { createIngestionRoutes } from "./modules/ingestion/ingestion-routes.js";
+import { createItemsRoutes } from "./modules/items/items-routes.js";
 
-export function createApp() {
+export interface AppDependencies {
+  items?: ItemRepository;
+  ingestionQueue?: IngestionQueue;
+}
+
+export function createApp(dependencies: AppDependencies = {}) {
   const app = express();
 
   app.use(helmet());
@@ -19,6 +28,11 @@ export function createApp() {
       data: { status: "ok", service: "ai-knowledge-inbox" }
     });
   });
+
+  if (dependencies.items && dependencies.ingestionQueue) {
+    app.use("/api", createIngestionRoutes(dependencies.items, dependencies.ingestionQueue));
+    app.use("/api", createItemsRoutes(dependencies.items));
+  }
 
   app.use(notFoundHandler);
   app.use(errorHandler);

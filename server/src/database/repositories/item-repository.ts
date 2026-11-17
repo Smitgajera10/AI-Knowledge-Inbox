@@ -63,6 +63,16 @@ export class ItemRepository {
       .run({ id, status, errorMessage, updatedAt: new Date().toISOString() });
   }
 
+  updateContent(id: string, title: string, rawContent: string, sourceUrl: string | null): void {
+    this.database
+      .prepare(
+        `UPDATE items
+         SET title = @title, raw_content = @rawContent, source_url = @sourceUrl, updated_at = @updatedAt
+         WHERE id = @id`
+      )
+      .run({ id, title, rawContent, sourceUrl, updatedAt: new Date().toISOString() });
+  }
+
   list(limit: number, offset: number, status?: ItemStatus, sourceType?: SourceType): Item[] {
     const conditions: string[] = [];
     const parameters: Record<string, string | number> = { limit, offset };
