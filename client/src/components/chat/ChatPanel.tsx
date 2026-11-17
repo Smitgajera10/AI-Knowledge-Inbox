@@ -44,8 +44,12 @@ export function ChatPanel({ hasKnowledge }: { hasKnowledge: boolean }) {
     <section className="rounded-2xl border border-zinc-200 bg-white p-5 shadow-sm sm:p-7">
       <div className="flex items-center justify-between gap-4">
         <div>
-          <span className="text-xs font-bold uppercase tracking-[0.12em] text-indigo-500">AI assistant</span>
-          <h2 className="mt-1 text-xl font-semibold text-zinc-900">Ask your knowledge base</h2>
+          <span className="text-xs font-bold uppercase tracking-[0.12em] text-indigo-500">
+            AI assistant
+          </span>
+          <h2 className="mt-1 text-xl font-semibold text-zinc-900">
+            Ask your knowledge base
+          </h2>
         </div>
         <span className="inline-flex items-center gap-1.5 rounded-full bg-indigo-50 px-2.5 py-1.5 text-xs text-indigo-600">
           <Bot size={14} /> Grounded answers
@@ -62,11 +66,10 @@ export function ChatPanel({ hasKnowledge }: { hasKnowledge: boolean }) {
           </div>
         )}
         {messages.map((message, index) => (
-          <div
-            className="flex gap-2"
-            key={`${message.role}-${index}`}
-          >
-            <div className={`grid size-7 shrink-0 place-items-center rounded-lg ${message.role === "user" ? "bg-zinc-100 text-zinc-600" : "bg-indigo-50 text-indigo-500"}`}>
+          <div className="flex gap-2" key={`${message.role}-${index}`}>
+            <div
+              className={`grid size-7 shrink-0 place-items-center rounded-lg ${message.role === "user" ? "bg-zinc-100 text-zinc-600" : "bg-indigo-50 text-indigo-500"}`}
+            >
               {message.role === "user" ? (
                 <UserRound size={15} />
               ) : (
@@ -82,7 +85,10 @@ export function ChatPanel({ hasKnowledge }: { hasKnowledge: boolean }) {
                     sources
                   </summary>
                   {message.result.sources.map((source) => (
-                    <div className="mt-2 grid gap-1 rounded-lg bg-zinc-50 p-2 text-xs" key={source.chunkId}>
+                    <div
+                      className="mt-2 grid gap-1 rounded-lg bg-zinc-50 p-2 text-xs"
+                      key={source.chunkId}
+                    >
                       <strong className="text-zinc-800">{source.title}</strong>
                       <span className="text-zinc-500">{source.snippet}</span>
                       <small className="text-zinc-400">
@@ -100,12 +106,14 @@ export function ChatPanel({ hasKnowledge }: { hasKnowledge: boolean }) {
             <div className="grid size-7 shrink-0 place-items-center rounded-lg bg-indigo-50 text-indigo-500">
               <Bot size={15} />
             </div>
-            <div className="pt-1 text-sm text-zinc-400">Searching your knowledge...</div>
+            <div className="pt-1 text-sm text-zinc-400">
+              Searching your knowledge...
+            </div>
           </div>
         )}
       </div>
       {error && <Feedback tone="error">{error}</Feedback>}
-      <div className="flex items-center gap-2 rounded-lg border border-zinc-300 px-3">
+      <div className="flex items-center rounded-lg border border-zinc-300 px-3 w-full justify-between transition-all duration-200 hover:border-indigo-500 focus-within:border-indigo-500 focus-within:ring-2 focus-within:ring-indigo-100">
         <input
           disabled={!hasKnowledge || loading}
           value={question}
@@ -118,6 +126,7 @@ export function ChatPanel({ hasKnowledge }: { hasKnowledge: boolean }) {
               ? "What would you like to know?"
               : "Add a completed item to ask questions"
           }
+          className="w-full outline-none bg-transparent"
         />
         <button
           className="grid size-8 place-items-center rounded-lg bg-indigo-600 text-white disabled:cursor-not-allowed disabled:opacity-50"
