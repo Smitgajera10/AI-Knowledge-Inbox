@@ -176,13 +176,17 @@ h3 {
   border-color: #a1a1aa;
 }
 .inbox-section,
-.assistant-panel {
+.assistant-panel,
+.logs-panel {
   padding: 26px;
   border: 1px solid #e4e4e7;
   border-radius: 14px;
   background: #fff;
   box-shadow: 0 8px 26px rgba(24, 24, 27, 0.035);
 }
+.logs-panel { margin-top: 22px; }
+.logs-description { margin-top: 10px; color: #71717a; font-size: 13px; line-height: 1.5; }
+.logs-output { max-height: 360px; overflow: auto; margin: 18px 0 0; padding: 14px; color: #d4d4d8; background: #18181b; border-radius: 9px; font: 11px/1.6 ui-monospace, SFMono-Regular, Menlo, monospace; white-space: pre-wrap; word-break: break-word; }
 .section-heading {
   display: flex;
   align-items: center;

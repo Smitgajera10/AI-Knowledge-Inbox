@@ -54,6 +54,12 @@ export function queryKnowledge(question: string): Promise<QueryResult> {
   });
 }
 
+export function getLogs(limit = 100): Promise<string[]> {
+  return request<{ logs: string[] }>(`/logs?limit=${limit}`).then(
+    (result) => result.logs,
+  );
+}
+
 export function filterItems(
   items: KnowledgeItem[],
   sourceType?: SourceType,

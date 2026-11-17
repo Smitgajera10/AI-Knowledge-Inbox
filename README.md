@@ -161,6 +161,8 @@ Returns the API health response.
 - JSON request sizes are capped.
 - Errors use a consistent response envelope and safe public messages.
 - Detailed failures are logged without API credentials or full document bodies.
+- Structured logs are written to `server/data/app.log` by default, excluded from
+  Git, and available in the UI under **Logs** or through `GET /api/logs?limit=100`.
 - Queued work has bounded retries and backoff.
 
 ## Testing

@@ -7,6 +7,7 @@ import { AddNoteModal } from "./components/inbox/AddNoteModal";
 import { KnowledgeList } from "./components/inbox/KnowledgeList";
 import { SaveUrlModal } from "./components/inbox/SaveUrlModal";
 import { useItems } from "./hooks/use-items";
+import { LogsPanel } from "./components/logs/LogsPanel";
 
 export function App() {
   const { items, loading, error, refresh } = useItems();
@@ -62,6 +63,7 @@ export function App() {
           )}
         </section>
         <ChatPanel hasKnowledge={completedCount > 0} />
+        <LogsPanel />
       </main>
     </AppLayout>
   );

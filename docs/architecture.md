@@ -48,6 +48,14 @@ POST /api/query
 
 An empty retrieval result returns a no-answer response and does not invoke the LLM.
 
+## Logging
+
+Pino writes newline-delimited JSON logs to `server/data/app.log` by default.
+The path can be overridden with `LOG_FILE`. The file is intentionally ignored
+by Git because it contains local runtime history. `GET /api/logs` returns only
+the latest bounded tail for the single-user diagnostics panel; it is not a
+replacement for production log aggregation.
+
 ## Persistence
 
 SQLite enables a zero-infrastructure local setup:

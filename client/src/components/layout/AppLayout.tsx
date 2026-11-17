@@ -1,4 +1,4 @@
-import { BookOpen, Inbox, MessageCircle, Settings } from "lucide-react";
+import { BookOpen, Inbox, MessageCircle, ScrollText, Settings } from "lucide-react";
 import type { ReactNode } from "react";
 
 export function AppLayout({ children }: { children: ReactNode }) {
@@ -23,6 +23,9 @@ export function AppLayout({ children }: { children: ReactNode }) {
           </a>
           <a className="nav-item" href="#settings">
             <Settings size={17} /> Settings
+          </a>
+          <a className="nav-item" href="#logs">
+            <ScrollText size={17} /> Logs
           </a>
         </nav>
         <p className="sidebar-note">
