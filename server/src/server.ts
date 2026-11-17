@@ -1,8 +1,22 @@
 import { createApp } from "./app.js";
+import { loadConfig } from "./config/env.js";
 
-const port = Number(process.env.PORT ?? 3000);
+const config = loadConfig();
 const app = createApp();
 
-app.listen(port, () => {
-  console.log(`AI Knowledge Inbox API listening on http://localhost:${port}`);
+const server = app.listen(config.PORT, () => {
+  console.log(`AI Knowledge Inbox API listening on http://localhost:${config.PORT}`);
 });
+
+function shutdown(signal: string): void {
+  console.log(`Received ${signal}; shutting down`);
+  server.close((error) => {
+    if (error) {
+      console.error("Failed to close server cleanly", error);
+      process.exitCode = 1;
+    }
+  });
+}
+
+process.on("SIGINT", () => shutdown("SIGINT"));
+process.on("SIGTERM", () => shutdown("SIGTERM"));
