@@ -10,7 +10,7 @@ function isPrivateIpv4(address: string): boolean {
     (first === 169 && second === 254) ||
     (first === 172 && second >= 16 && second <= 31) ||
     (first === 192 && second === 168) ||
-    (first === 0)
+    first === 0
   );
 }
 
@@ -47,8 +47,14 @@ export async function assertSafeUrl(value: string): Promise<URL> {
     throw new Error("Local network URLs are not allowed");
   }
 
-  const addresses = await dns.lookup(url.hostname, { all: true, verbatim: true });
-  if (addresses.length === 0 || addresses.some(({ address }) => isPrivateAddress(address))) {
+  const addresses = await dns.lookup(url.hostname, {
+    all: true,
+    verbatim: true,
+  });
+  if (
+    addresses.length === 0 ||
+    addresses.some(({ address }) => isPrivateAddress(address))
+  ) {
     throw new Error("Private or reserved network addresses are not allowed");
   }
 

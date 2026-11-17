@@ -23,7 +23,7 @@ function mapItem(row: ItemRow): Item {
     status: row.status,
     errorMessage: row.error_message,
     createdAt: row.created_at,
-    updatedAt: row.updated_at
+    updatedAt: row.updated_at,
   };
 }
 
@@ -35,7 +35,7 @@ export class ItemRepository {
       .prepare(
         `INSERT INTO items
           (id, title, source_type, source_url, raw_content, status, error_message, created_at, updated_at)
-         VALUES (@id, @title, @sourceType, @sourceUrl, @rawContent, @status, @errorMessage, @createdAt, @updatedAt)`
+         VALUES (@id, @title, @sourceType, @sourceUrl, @rawContent, @status, @errorMessage, @createdAt, @updatedAt)`,
       )
       .run({
         id: item.id,
@@ -46,34 +46,56 @@ export class ItemRepository {
         status: item.status,
         errorMessage: item.errorMessage,
         createdAt: item.createdAt,
-        updatedAt: item.updatedAt
+        updatedAt: item.updatedAt,
       });
   }
 
   findById(id: string): Item | undefined {
-    const row = this.database.prepare("SELECT * FROM items WHERE id = ?").get(id) as ItemRow | undefined;
+    const row = this.database
+      .prepare("SELECT * FROM items WHERE id = ?")
+      .get(id) as ItemRow | undefined;
     return row ? mapItem(row) : undefined;
   }
 
-  updateStatus(id: string, status: ItemStatus, errorMessage: string | null = null): void {
+  updateStatus(
+    id: string,
+    status: ItemStatus,
+    errorMessage: string | null = null,
+  ): void {
     this.database
       .prepare(
-        "UPDATE items SET status = @status, error_message = @errorMessage, updated_at = @updatedAt WHERE id = @id"
+        "UPDATE items SET status = @status, error_message = @errorMessage, updated_at = @updatedAt WHERE id = @id",
       )
       .run({ id, status, errorMessage, updatedAt: new Date().toISOString() });
   }
 
-  updateContent(id: string, title: string, rawContent: string, sourceUrl: string | null): void {
+  updateContent(
+    id: string,
+    title: string,
+    rawContent: string,
+    sourceUrl: string | null,
+  ): void {
     this.database
       .prepare(
         `UPDATE items
          SET title = @title, raw_content = @rawContent, source_url = @sourceUrl, updated_at = @updatedAt
-         WHERE id = @id`
+         WHERE id = @id`,
       )
-      .run({ id, title, rawContent, sourceUrl, updatedAt: new Date().toISOString() });
+      .run({
+        id,
+        title,
+        rawContent,
+        sourceUrl,
+        updatedAt: new Date().toISOString(),
+      });
   }
 
-  list(limit: number, offset: number, status?: ItemStatus, sourceType?: SourceType): Item[] {
+  list(
+    limit: number,
+    offset: number,
+    status?: ItemStatus,
+    sourceType?: SourceType,
+  ): Item[] {
     const conditions: string[] = [];
     const parameters: Record<string, string | number> = { limit, offset };
 
@@ -86,9 +108,12 @@ export class ItemRepository {
       parameters.sourceType = sourceType;
     }
 
-    const where = conditions.length > 0 ? `WHERE ${conditions.join(" AND ")}` : "";
+    const where =
+      conditions.length > 0 ? `WHERE ${conditions.join(" AND ")}` : "";
     const rows = this.database
-      .prepare(`SELECT * FROM items ${where} ORDER BY created_at DESC LIMIT @limit OFFSET @offset`)
+      .prepare(
+        `SELECT * FROM items ${where} ORDER BY created_at DESC LIMIT @limit OFFSET @offset`,
+      )
       .all(parameters) as ItemRow[];
     return rows.map(mapItem);
   }

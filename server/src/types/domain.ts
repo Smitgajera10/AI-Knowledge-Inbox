@@ -1,7 +1,12 @@
 export const SOURCE_TYPES = ["NOTE", "URL"] as const;
 export type SourceType = (typeof SOURCE_TYPES)[number];
 
-export const ITEM_STATUSES = ["PENDING", "PROCESSING", "COMPLETED", "FAILED"] as const;
+export const ITEM_STATUSES = [
+  "PENDING",
+  "PROCESSING",
+  "COMPLETED",
+  "FAILED",
+] as const;
 export type ItemStatus = (typeof ITEM_STATUSES)[number];
 
 export interface Item {

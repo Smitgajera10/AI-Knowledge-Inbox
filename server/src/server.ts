@@ -4,7 +4,10 @@ import { loadConfig } from "./config/env.js";
 import { createDatabase } from "./database/database.js";
 import { ChunkRepository } from "./database/repositories/chunk-repository.js";
 import { ItemRepository } from "./database/repositories/item-repository.js";
-import { createEmbeddingProvider, createLlmProvider } from "./services/ai/provider-factory.js";
+import {
+  createEmbeddingProvider,
+  createLlmProvider,
+} from "./services/ai/provider-factory.js";
 import { SearchRepository } from "./database/repositories/search-repository.js";
 import { VectorSearchService } from "./services/vector-search/vector-search-service.js";
 import { RagService } from "./services/rag/rag-service.js";
@@ -23,12 +26,18 @@ const search = new VectorSearchService(
   new SearchRepository(database),
   embeddings,
   config.TOP_K,
-  config.SIMILARITY_THRESHOLD
+  config.SIMILARITY_THRESHOLD,
 );
-const app = createApp({ items, ingestionQueue, rag: new RagService(search, llm) });
+const app = createApp({
+  items,
+  ingestionQueue,
+  rag: new RagService(search, llm),
+});
 
 const server = app.listen(config.PORT, () => {
-  console.log(`AI Knowledge Inbox API listening on http://localhost:${config.PORT}`);
+  console.log(
+    `AI Knowledge Inbox API listening on http://localhost:${config.PORT}`,
+  );
 });
 
 function shutdown(signal: string): void {

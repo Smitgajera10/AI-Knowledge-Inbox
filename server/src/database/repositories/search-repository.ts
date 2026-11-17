@@ -36,7 +36,7 @@ export class SearchRepository {
          JOIN items i ON i.id = c.item_id
          JOIN embeddings e ON e.chunk_id = c.id
          WHERE i.status = 'COMPLETED'
-         ORDER BY c.created_at ASC`
+         ORDER BY c.created_at ASC`,
       )
       .all() as SearchDatabaseRow[];
 
@@ -49,7 +49,7 @@ export class SearchRepository {
       vector: JSON.parse(row.vector) as number[],
       provider: row.provider,
       model: row.model,
-      dimensions: row.dimensions
+      dimensions: row.dimensions,
     }));
   }
 }

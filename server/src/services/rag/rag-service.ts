@@ -19,25 +19,28 @@ export interface QueryResult {
 export class RagService {
   constructor(
     private readonly search: VectorSearchService,
-    private readonly llmProvider: AIProvider
+    private readonly llmProvider: AIProvider,
   ) {}
 
   async query(question: string): Promise<QueryResult> {
     const results = await this.search.search(question);
     if (results.length === 0) {
       return {
-        answer: "I could not find relevant information in your saved knowledge.",
-        sources: []
+        answer:
+          "I could not find relevant information in your saved knowledge.",
+        sources: [],
       };
     }
 
     const answer = await this.llmProvider.generateAnswer({
       question,
-      context: buildContext(results)
+      context: buildContext(results),
     });
     const allowedChunkIds = new Set(results.map((result) => result.chunkId));
     if (!validateCitations(answer, allowedChunkIds)) {
-      throw new Error("The generated answer did not contain valid source citations");
+      throw new Error(
+        "The generated answer did not contain valid source citations",
+      );
     }
 
     return {
@@ -48,8 +51,8 @@ export class RagService {
         title: result.title,
         snippet: result.content.slice(0, 300),
         similarity: result.similarity,
-        sourceUrl: result.sourceUrl
-      }))
+        sourceUrl: result.sourceUrl,
+      })),
     };
   }
 }

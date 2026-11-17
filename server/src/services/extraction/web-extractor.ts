@@ -35,14 +35,16 @@ async function readLimitedBody(response: Response): Promise<string> {
   return new TextDecoder().decode(body);
 }
 
-export async function extractWebPage(inputUrl: string): Promise<{ title: string; content: string; sourceUrl: string }> {
+export async function extractWebPage(
+  inputUrl: string,
+): Promise<{ title: string; content: string; sourceUrl: string }> {
   let currentUrl = await assertSafeUrl(inputUrl);
 
   for (let redirect = 0; redirect <= MAX_REDIRECTS; redirect += 1) {
     const response = await fetch(currentUrl, {
       redirect: "manual",
       signal: AbortSignal.timeout(15_000),
-      headers: { "user-agent": "AI-Knowledge-Inbox/1.0" }
+      headers: { "user-agent": "AI-Knowledge-Inbox/1.0" },
     });
 
     if (response.status >= 300 && response.status < 400) {
@@ -50,7 +52,9 @@ export async function extractWebPage(inputUrl: string): Promise<{ title: string;
       if (!location || redirect === MAX_REDIRECTS) {
         throw new Error("URL redirect chain is invalid or too long");
       }
-      currentUrl = await assertSafeUrl(new URL(location, currentUrl).toString());
+      currentUrl = await assertSafeUrl(
+        new URL(location, currentUrl).toString(),
+      );
       continue;
     }
 
@@ -59,13 +63,20 @@ export async function extractWebPage(inputUrl: string): Promise<{ title: string;
     }
 
     const contentType = response.headers.get("content-type") ?? "";
-    if (!contentType.includes("text/html") && !contentType.includes("text/plain")) {
+    if (
+      !contentType.includes("text/html") &&
+      !contentType.includes("text/plain")
+    ) {
       throw new Error("URL content type is not supported");
     }
 
     const body = await readLimitedBody(response);
     if (contentType.includes("text/plain")) {
-      return { title: currentUrl.hostname, content: body.trim(), sourceUrl: currentUrl.toString() };
+      return {
+        title: currentUrl.hostname,
+        content: body.trim(),
+        sourceUrl: currentUrl.toString(),
+      };
     }
 
     const $ = cheerio.load(body);

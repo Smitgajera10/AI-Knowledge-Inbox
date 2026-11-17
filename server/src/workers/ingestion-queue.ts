@@ -11,7 +11,7 @@ export class IngestionQueue {
   constructor(
     private readonly processor: JobProcessor,
     private readonly concurrency = 2,
-    private readonly maxAttempts = 3
+    private readonly maxAttempts = 3,
   ) {}
 
   enqueue(itemId: string): void {
@@ -32,7 +32,11 @@ export class IngestionQueue {
   }
 
   private drain(): void {
-    while (!this.stopped && this.activeJobs < this.concurrency && this.pending.length > 0) {
+    while (
+      !this.stopped &&
+      this.activeJobs < this.concurrency &&
+      this.pending.length > 0
+    ) {
       const itemId = this.pending.shift()!;
       this.activeJobs += 1;
       void this.run(itemId);
@@ -47,11 +51,17 @@ export class IngestionQueue {
           return;
         } catch (error) {
           if (attempt === this.maxAttempts) {
-            logger.error({ err: error, itemId, attempts: attempt }, "Ingestion job failed");
+            logger.error(
+              { err: error, itemId, attempts: attempt },
+              "Ingestion job failed",
+            );
             return;
           }
           const delay = 250 * 2 ** (attempt - 1);
-          logger.warn({ err: error, itemId, attempt, retryInMs: delay }, "Retrying ingestion job");
+          logger.warn(
+            { err: error, itemId, attempt, retryInMs: delay },
+            "Retrying ingestion job",
+          );
           await new Promise((resolve) => setTimeout(resolve, delay));
         }
       }

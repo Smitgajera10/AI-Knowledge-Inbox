@@ -10,7 +10,7 @@ export class IngestionWorker {
   constructor(
     private readonly items: ItemRepository,
     private readonly chunks: ChunkRepository,
-    private readonly embeddingProvider: AIProvider
+    private readonly embeddingProvider: AIProvider,
   ) {}
 
   async process(itemId: string): Promise<void> {
@@ -39,40 +39,48 @@ export class IngestionWorker {
         throw new Error("Content did not produce any non-empty chunks");
       }
 
-      const vectors = await this.embeddingProvider.embed(textChunks.map((chunk) => chunk.content));
-      if (vectors.length !== textChunks.length || vectors.some((vector) => vector.length === 0)) {
+      const vectors = await this.embeddingProvider.embed(
+        textChunks.map((chunk) => chunk.content),
+      );
+      if (
+        vectors.length !== textChunks.length ||
+        vectors.some((vector) => vector.length === 0)
+      ) {
         throw new Error("Embedding provider returned an invalid vector set");
       }
 
       const now = new Date().toISOString();
       this.chunks.replaceForItem(
         itemId,
-        textChunks.map((chunk, index) => {
-          const vector = vectors[index];
-          return {
-            id: crypto.randomUUID(),
-            itemId,
-            content: chunk.content,
-            chunkIndex: chunk.chunkIndex,
-            createdAt: now,
-            embedding: {
+        textChunks
+          .map((chunk, index) => {
+            const vector = vectors[index];
+            return {
               id: crypto.randomUUID(),
-              chunkId: "",
-              vector,
-              provider: this.embeddingProvider.name,
-              model: this.embeddingProvider.embeddingModel,
-              dimensions: vector.length,
-              createdAt: now
-            }
-          };
-        }).map((chunk) => ({
-          ...chunk,
-          embedding: { ...chunk.embedding, chunkId: chunk.id }
-        }))
+              itemId,
+              content: chunk.content,
+              chunkIndex: chunk.chunkIndex,
+              createdAt: now,
+              embedding: {
+                id: crypto.randomUUID(),
+                chunkId: "",
+                vector,
+                provider: this.embeddingProvider.name,
+                model: this.embeddingProvider.embeddingModel,
+                dimensions: vector.length,
+                createdAt: now,
+              },
+            };
+          })
+          .map((chunk) => ({
+            ...chunk,
+            embedding: { ...chunk.embedding, chunkId: chunk.id },
+          })),
       );
       this.items.updateStatus(itemId, "COMPLETED");
     } catch (error) {
-      const message = error instanceof Error ? error.message : "Ingestion failed";
+      const message =
+        error instanceof Error ? error.message : "Ingestion failed";
       this.items.updateStatus(itemId, "FAILED", message.slice(0, 500));
       logger.error({ err: error, itemId }, "Ingestion processing failed");
       throw error;

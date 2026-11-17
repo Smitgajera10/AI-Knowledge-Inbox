@@ -6,19 +6,19 @@ export class ChunkRepository {
 
   replaceForItem(
     itemId: string,
-    chunks: Array<Chunk & { embedding: StoredEmbedding }>
+    chunks: Array<Chunk & { embedding: StoredEmbedding }>,
   ): void {
     const transaction = this.database.transaction(() => {
       this.database.prepare("DELETE FROM chunks WHERE item_id = ?").run(itemId);
 
       const insertChunk = this.database.prepare(
         `INSERT INTO chunks (id, item_id, content, chunk_index, created_at)
-         VALUES (@id, @itemId, @content, @chunkIndex, @createdAt)`
+         VALUES (@id, @itemId, @content, @chunkIndex, @createdAt)`,
       );
       const insertEmbedding = this.database.prepare(
         `INSERT INTO embeddings
           (id, chunk_id, vector, provider, model, dimensions, created_at)
-         VALUES (@id, @chunkId, @vector, @provider, @model, @dimensions, @createdAt)`
+         VALUES (@id, @chunkId, @vector, @provider, @model, @dimensions, @createdAt)`,
       );
 
       for (const chunk of chunks) {
@@ -27,7 +27,7 @@ export class ChunkRepository {
           itemId: chunk.itemId,
           content: chunk.content,
           chunkIndex: chunk.chunkIndex,
-          createdAt: chunk.createdAt
+          createdAt: chunk.createdAt,
         });
         insertEmbedding.run({
           id: chunk.embedding.id,
@@ -36,7 +36,7 @@ export class ChunkRepository {
           provider: chunk.embedding.provider,
           model: chunk.embedding.model,
           dimensions: chunk.embedding.dimensions,
-          createdAt: chunk.embedding.createdAt
+          createdAt: chunk.embedding.createdAt,
         });
       }
     });

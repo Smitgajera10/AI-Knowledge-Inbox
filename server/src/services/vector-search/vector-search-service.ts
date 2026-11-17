@@ -1,4 +1,7 @@
-import type { SearchRepository, SearchRow } from "../../database/repositories/search-repository.js";
+import type {
+  SearchRepository,
+  SearchRow,
+} from "../../database/repositories/search-repository.js";
 import type { AIProvider } from "../ai/provider.js";
 import { cosineSimilarity } from "./cosine-similarity.js";
 
@@ -16,7 +19,7 @@ export class VectorSearchService {
     private readonly repository: SearchRepository,
     private readonly embeddingProvider: AIProvider,
     private readonly topK: number,
-    private readonly threshold: number
+    private readonly threshold: number,
   ) {}
 
   async search(question: string): Promise<SearchResult[]> {
@@ -31,7 +34,7 @@ export class VectorSearchService {
         row.provider === this.embeddingProvider.name &&
         row.model === this.embeddingProvider.embeddingModel &&
         row.dimensions === queryVector.length &&
-        row.vector.length === queryVector.length
+        row.vector.length === queryVector.length,
     );
 
     return compatibleRows
@@ -48,7 +51,7 @@ export class VectorSearchService {
       content: row.content,
       title: row.title,
       sourceUrl: row.sourceUrl,
-      similarity: cosineSimilarity(queryVector, row.vector)
+      similarity: cosineSimilarity(queryVector, row.vector),
     };
   }
 }

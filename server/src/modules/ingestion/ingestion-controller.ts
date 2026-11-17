@@ -7,12 +7,18 @@ import type { IngestionQueue } from "../../workers/ingestion-queue.js";
 
 export function createIngestionController(
   items: ItemRepository,
-  queue: IngestionQueue
+  queue: IngestionQueue,
 ): RequestHandler {
   return (request, response, next) => {
     const parsed = ingestionSchema.safeParse(request.body);
     if (!parsed.success) {
-      next(new AppError(422, "INVALID_INGESTION_REQUEST", parsed.error.issues[0]?.message ?? "Invalid request"));
+      next(
+        new AppError(
+          422,
+          "INVALID_INGESTION_REQUEST",
+          parsed.error.issues[0]?.message ?? "Invalid request",
+        ),
+      );
       return;
     }
 
@@ -29,13 +35,13 @@ export function createIngestionController(
       status: "PENDING",
       errorMessage: null,
       createdAt: now,
-      updatedAt: now
+      updatedAt: now,
     });
     queue.enqueue(itemId);
 
     response.status(202).json({
       success: true,
-      data: { itemId, status: "PENDING" }
+      data: { itemId, status: "PENDING" },
     });
   };
 }

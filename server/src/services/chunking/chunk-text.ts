@@ -9,14 +9,20 @@ const DEFAULT_OVERLAP_CHARACTERS = 300;
 export function chunkText(
   input: string,
   targetCharacters = DEFAULT_TARGET_CHARACTERS,
-  overlapCharacters = DEFAULT_OVERLAP_CHARACTERS
+  overlapCharacters = DEFAULT_OVERLAP_CHARACTERS,
 ): TextChunk[] {
   const content = input.trim();
   if (!content) {
     return [];
   }
-  if (targetCharacters <= 0 || overlapCharacters < 0 || overlapCharacters >= targetCharacters) {
-    throw new Error("Chunk target must be positive and overlap must be smaller than target");
+  if (
+    targetCharacters <= 0 ||
+    overlapCharacters < 0 ||
+    overlapCharacters >= targetCharacters
+  ) {
+    throw new Error(
+      "Chunk target must be positive and overlap must be smaller than target",
+    );
   }
 
   const chunks: TextChunk[] = [];

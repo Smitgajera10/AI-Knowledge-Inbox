@@ -3,5 +3,8 @@ export interface AIProvider {
   readonly embeddingModel: string;
   readonly chatModel: string;
   embed(texts: string[]): Promise<number[][]>;
-  generateAnswer(params: { question: string; context: string }): Promise<string>;
+  generateAnswer(params: {
+    question: string;
+    context: string;
+  }): Promise<string>;
 }
