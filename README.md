@@ -45,10 +45,25 @@ See [`docs/architecture.md`](docs/architecture.md) for the module boundaries and
 
 ## Setup
 
-```powershell
-npm install
-Copy-Item server\.env.example server\.env
-```
+### Installation
+
+1. Install dependencies:
+   ```bash
+   npm install
+   ```
+
+2. Create your environment file:
+
+   **macOS / Linux / Git Bash:**
+   ```bash
+   cp server/.env.example server/.env
+   ```
+
+   **Windows (PowerShell):**
+   ```powershell
+   Copy-Item server\.env.example server\.env
+   ```
+
 
 Edit `server/.env` and set the provider credentials and model IDs supported by the provider accounts you are using. The embedding provider and embedding model must remain the same for ingestion and queries.
 
