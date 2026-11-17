@@ -83,6 +83,15 @@ npm run dev:client
 
 Open `http://localhost:5173`. The API health check is available at `http://localhost:3000/api/health`.
 
+The client uses dedicated routes:
+
+- `/` — knowledge inbox
+- `/assistant` — AI assistant
+- `/logs` — local application diagnostics
+
+There is no Settings page because provider credentials are server-side
+environment configuration, not browser-editable application state.
+
 ## API
 
 ### `POST /api/ingest`

@@ -41,19 +41,19 @@ export function ChatPanel({ hasKnowledge }: { hasKnowledge: boolean }) {
   }
 
   return (
-    <section className="assistant-panel" id="assistant">
-      <div className="section-heading">
+    <section className="rounded-2xl border border-zinc-200 bg-white p-5 shadow-sm sm:p-7">
+      <div className="flex items-center justify-between gap-4">
         <div>
-          <span className="eyebrow">AI assistant</span>
-          <h2>Ask your knowledge base</h2>
+          <span className="text-xs font-bold uppercase tracking-[0.12em] text-indigo-500">AI assistant</span>
+          <h2 className="mt-1 text-xl font-semibold text-zinc-900">Ask your knowledge base</h2>
         </div>
-        <span className="ai-pill">
+        <span className="inline-flex items-center gap-1.5 rounded-full bg-indigo-50 px-2.5 py-1.5 text-xs text-indigo-600">
           <Bot size={14} /> Grounded answers
         </span>
       </div>
-      <div className="chat-history">
+      <div className="my-6 grid max-h-[500px] min-h-40 gap-4 overflow-auto">
         {messages.length === 0 && (
-          <div className="chat-empty">
+          <div className="grid place-items-center content-center gap-2 text-center text-sm text-zinc-400">
             <Bot size={28} />
             <p>
               Ask a question about your saved notes and webpages. Answers are
@@ -63,29 +63,29 @@ export function ChatPanel({ hasKnowledge }: { hasKnowledge: boolean }) {
         )}
         {messages.map((message, index) => (
           <div
-            className={`message message-${message.role}`}
+            className="flex gap-2"
             key={`${message.role}-${index}`}
           >
-            <div className="message-avatar">
+            <div className={`grid size-7 shrink-0 place-items-center rounded-lg ${message.role === "user" ? "bg-zinc-100 text-zinc-600" : "bg-indigo-50 text-indigo-500"}`}>
               {message.role === "user" ? (
                 <UserRound size={15} />
               ) : (
                 <Bot size={15} />
               )}
             </div>
-            <div className="message-body">
+            <div className="max-w-[82%] text-sm leading-relaxed text-zinc-700">
               <ReactMarkdown>{message.text}</ReactMarkdown>
               {message.result && message.result.sources.length > 0 && (
-                <details className="sources">
-                  <summary>
+                <details className="mt-2 border-t border-zinc-100 pt-2">
+                  <summary className="flex cursor-pointer items-center gap-1 text-xs text-indigo-500">
                     <ChevronDown size={14} /> {message.result.sources.length}{" "}
                     sources
                   </summary>
                   {message.result.sources.map((source) => (
-                    <div className="source" key={source.chunkId}>
-                      <strong>{source.title}</strong>
-                      <span>{source.snippet}</span>
-                      <small>
+                    <div className="mt-2 grid gap-1 rounded-lg bg-zinc-50 p-2 text-xs" key={source.chunkId}>
+                      <strong className="text-zinc-800">{source.title}</strong>
+                      <span className="text-zinc-500">{source.snippet}</span>
+                      <small className="text-zinc-400">
                         Relevance {(source.similarity * 100).toFixed(0)}%
                       </small>
                     </div>
@@ -96,16 +96,16 @@ export function ChatPanel({ hasKnowledge }: { hasKnowledge: boolean }) {
           </div>
         ))}
         {loading && (
-          <div className="message message-assistant">
-            <div className="message-avatar">
+          <div className="flex gap-2">
+            <div className="grid size-7 shrink-0 place-items-center rounded-lg bg-indigo-50 text-indigo-500">
               <Bot size={15} />
             </div>
-            <div className="typing">Searching your knowledge...</div>
+            <div className="pt-1 text-sm text-zinc-400">Searching your knowledge...</div>
           </div>
         )}
       </div>
       {error && <Feedback tone="error">{error}</Feedback>}
-      <div className="query-box">
+      <div className="flex items-center gap-2 rounded-lg border border-zinc-300 px-3">
         <input
           disabled={!hasKnowledge || loading}
           value={question}
@@ -120,7 +120,7 @@ export function ChatPanel({ hasKnowledge }: { hasKnowledge: boolean }) {
           }
         />
         <button
-          className="send-button"
+          className="grid size-8 place-items-center rounded-lg bg-indigo-600 text-white disabled:cursor-not-allowed disabled:opacity-50"
           disabled={!hasKnowledge || loading || !question.trim()}
           onClick={() => void submit()}
           aria-label="Ask question"
