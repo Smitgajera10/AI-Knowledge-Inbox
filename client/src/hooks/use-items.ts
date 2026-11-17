@@ -13,7 +13,11 @@ export function useItems() {
       const data = await listItems();
       setItems(data.items);
     } catch (requestError) {
-      setError(requestError instanceof Error ? requestError.message : "Could not load knowledge");
+      setError(
+        requestError instanceof Error
+          ? requestError.message
+          : "Could not load knowledge",
+      );
     } finally {
       setLoading(false);
     }
@@ -24,7 +28,11 @@ export function useItems() {
   }, [refresh]);
 
   useEffect(() => {
-    if (!items.some((item) => item.status === "PENDING" || item.status === "PROCESSING")) {
+    if (
+      !items.some(
+        (item) => item.status === "PENDING" || item.status === "PROCESSING",
+      )
+    ) {
       return;
     }
     const timer = window.setTimeout(() => void refresh(), 1500);
