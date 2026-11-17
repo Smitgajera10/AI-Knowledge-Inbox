@@ -8,10 +8,13 @@ import type { ItemRepository } from "./database/repositories/item-repository.js"
 import type { IngestionQueue } from "./workers/ingestion-queue.js";
 import { createIngestionRoutes } from "./modules/ingestion/ingestion-routes.js";
 import { createItemsRoutes } from "./modules/items/items-routes.js";
+import type { RagService } from "./services/rag/rag-service.js";
+import { createQueryRoutes } from "./modules/query/query-routes.js";
 
 export interface AppDependencies {
   items?: ItemRepository;
   ingestionQueue?: IngestionQueue;
+  rag?: RagService;
 }
 
 export function createApp(dependencies: AppDependencies = {}) {
@@ -32,6 +35,9 @@ export function createApp(dependencies: AppDependencies = {}) {
   if (dependencies.items && dependencies.ingestionQueue) {
     app.use("/api", createIngestionRoutes(dependencies.items, dependencies.ingestionQueue));
     app.use("/api", createItemsRoutes(dependencies.items));
+  }
+  if (dependencies.rag) {
+    app.use("/api", createQueryRoutes(dependencies.rag));
   }
 
   app.use(notFoundHandler);
